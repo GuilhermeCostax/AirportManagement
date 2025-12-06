@@ -71,3 +71,13 @@
 - Observações:
   - Os testes de integração sob o profile `test` usam `H2` com inicialização via `schema.sql` e `data.sql` (em `src/test/resources`).
   - São validados: `POST` (`201` + persistência), `GET` (`200`), `PUT` (`200` + atualização), `DELETE` (`204`) e `GET` após `DELETE` (`404`).
+
+## Seed de Dados (Opcional)
+- Objetivo: popular automaticamente a base `SQLite` a partir do CSV de aeroportos do OpenFlights.
+- Como executar:
+  - `mvn spring-boot:run -Dspring-boot.run.profiles=seed`
+- Comportamento:
+  - Carrega o CSV remoto e insere aeroportos apenas quando a tabela está vazia.
+  - Converte altitude de pés para metros (`converterPesParaMetros`).
+  - Mapeia nome do país para código ISO 3166-1 alfa-2 (`obterIsoPais`).
+  - Ignora linhas sem `IATA` válido (exatamente 3 letras) ou sem `nome`/`cidade`.
