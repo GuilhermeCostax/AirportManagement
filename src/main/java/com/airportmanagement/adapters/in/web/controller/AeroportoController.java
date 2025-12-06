@@ -5,6 +5,7 @@ import com.airportmanagement.adapters.in.web.dto.AeroportoRequest;
 import com.airportmanagement.application.port.in.ConsultarAeroportosPort;
 import com.airportmanagement.application.port.in.CadastrarAeroportoPort;
 import com.airportmanagement.application.port.in.AtualizarAeroportoPort;
+import com.airportmanagement.application.port.in.ExcluirAeroportoPort;
 import com.airportmanagement.domain.model.Aeroporto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -25,11 +26,13 @@ public class AeroportoController {
   private final ConsultarAeroportosPort service;
   private final CadastrarAeroportoPort cadastrarService;
   private final AtualizarAeroportoPort atualizarService;
+  private final ExcluirAeroportoPort excluirService;
 
-  public AeroportoController(ConsultarAeroportosPort service, CadastrarAeroportoPort cadastrarService, AtualizarAeroportoPort atualizarService) {
+  public AeroportoController(ConsultarAeroportosPort service, CadastrarAeroportoPort cadastrarService, AtualizarAeroportoPort atualizarService, ExcluirAeroportoPort excluirService) {
     this.service = service;
     this.cadastrarService = cadastrarService;
     this.atualizarService = atualizarService;
+    this.excluirService = excluirService;
   }
 
   @GetMapping
@@ -59,6 +62,12 @@ public class AeroportoController {
     Aeroporto dados = new Aeroporto(null, body.nomeAeroporto, iata, body.cidade, body.codigoPaisIso, body.latitude, body.longitude, body.altitude);
     Aeroporto atualizado = atualizarService.atualizar(iata, dados);
     return ResponseEntity.ok(toResponse(atualizado));
+  }
+
+  @org.springframework.web.bind.annotation.DeleteMapping("/{iata}")
+  public ResponseEntity<Void> excluir(@PathVariable String iata) {
+    excluirService.excluirPorIata(iata);
+    return ResponseEntity.noContent().build();
   }
 
   private AeroportoResponse toResponse(Aeroporto a) {

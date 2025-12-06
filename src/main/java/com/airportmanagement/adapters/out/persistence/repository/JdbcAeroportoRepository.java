@@ -71,4 +71,9 @@ public class JdbcAeroportoRepository implements AeroportoRepository {
       iata
     );
   }
+
+  @Override
+  public int deleteByIata(String iata) {
+    return jdbcTemplate.update("DELETE FROM aeroporto WHERE codigo_iata = ?", iata);
+  }
 }

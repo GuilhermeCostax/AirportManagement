@@ -81,4 +81,13 @@ public class AeroportoControllerIT {
       .andExpect(jsonPath("$.nomeAeroporto").value("Madang Updated"))
       .andExpect(jsonPath("$.altitude").value(42.0));
   }
+
+  @Test
+  void deveDeletarEAposRetornar404() throws Exception {
+    mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete("/api/v1/aeroportos/MAG"))
+      .andExpect(status().isNoContent());
+
+    mockMvc.perform(get("/api/v1/aeroportos/MAG"))
+      .andExpect(status().isNotFound());
+  }
 }

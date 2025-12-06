@@ -9,4 +9,5 @@ public interface AeroportoRepository {
   Optional<Aeroporto> findByIata(String iata);
   Aeroporto save(Aeroporto aeroporto);
   int updateByIata(String iata, Aeroporto aeroporto);
+  int deleteByIata(String iata);
 }
