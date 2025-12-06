@@ -8,6 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -31,5 +32,27 @@ public class AeroportoControllerIT {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$[0].codigoIata").exists());
   }
-}
 
+  @Test
+  void deveCriarAeroporto() throws Exception {
+    String json = "{\n" +
+      "  \"nomeAeroporto\": \"Teste Airport\",\n" +
+      "  \"codigoIata\": \"TST\",\n" +
+      "  \"cidade\": \"Teste City\",\n" +
+      "  \"codigoPaisIso\": null,\n" +
+      "  \"latitude\": 1.23,\n" +
+      "  \"longitude\": 4.56,\n" +
+      "  \"altitude\": 100.0\n" +
+      "}";
+
+    mockMvc.perform(post("/api/v1/aeroportos").contentType("application/json").content(json))
+      .andExpect(status().isCreated())
+      .andExpect(header().string("Location", "/api/v1/aeroportos/TST"))
+      .andExpect(jsonPath("$.codigoIata").value("TST"))
+      .andExpect(jsonPath("$.nomeAeroporto").value("Teste Airport"));
+
+    mockMvc.perform(get("/api/v1/aeroportos/TST"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.codigoIata").value("TST"));
+  }
+}
