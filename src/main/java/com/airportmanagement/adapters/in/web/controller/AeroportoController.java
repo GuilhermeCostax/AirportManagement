@@ -4,6 +4,7 @@ import com.airportmanagement.adapters.in.web.dto.AeroportoResponse;
 import com.airportmanagement.adapters.in.web.dto.AeroportoRequest;
 import com.airportmanagement.application.port.in.ConsultarAeroportosPort;
 import com.airportmanagement.application.port.in.CadastrarAeroportoPort;
+import com.airportmanagement.application.port.in.AtualizarAeroportoPort;
 import com.airportmanagement.domain.model.Aeroporto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class AeroportoController {
   private final ConsultarAeroportosPort service;
   private final CadastrarAeroportoPort cadastrarService;
+  private final AtualizarAeroportoPort atualizarService;
 
-  public AeroportoController(ConsultarAeroportosPort service, CadastrarAeroportoPort cadastrarService) {
+  public AeroportoController(ConsultarAeroportosPort service, CadastrarAeroportoPort cadastrarService, AtualizarAeroportoPort atualizarService) {
     this.service = service;
     this.cadastrarService = cadastrarService;
+    this.atualizarService = atualizarService;
   }
 
   @GetMapping
@@ -49,6 +52,13 @@ public class AeroportoController {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Location", "/api/v1/aeroportos/" + resp.codigoIata);
     return new ResponseEntity<>(resp, headers, HttpStatus.CREATED);
+  }
+
+  @org.springframework.web.bind.annotation.PutMapping("/{iata}")
+  public ResponseEntity<AeroportoResponse> atualizar(@PathVariable String iata, @RequestBody AeroportoRequest body) {
+    Aeroporto dados = new Aeroporto(null, body.nomeAeroporto, iata, body.cidade, body.codigoPaisIso, body.latitude, body.longitude, body.altitude);
+    Aeroporto atualizado = atualizarService.atualizar(iata, dados);
+    return ResponseEntity.ok(toResponse(atualizado));
   }
 
   private AeroportoResponse toResponse(Aeroporto a) {

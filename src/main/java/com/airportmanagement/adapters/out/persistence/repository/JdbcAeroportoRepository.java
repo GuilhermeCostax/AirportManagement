@@ -57,4 +57,18 @@ public class JdbcAeroportoRepository implements AeroportoRepository {
     Integer id = kh.getKey() != null ? kh.getKey().intValue() : null;
     return new Aeroporto(id, aeroporto.getNomeAeroporto(), aeroporto.getCodigoIata(), aeroporto.getCidade(), aeroporto.getCodigoPaisIso(), aeroporto.getLatitude(), aeroporto.getLongitude(), aeroporto.getAltitude());
   }
+
+  @Override
+  public int updateByIata(String iata, Aeroporto aeroporto) {
+    var sql = "UPDATE aeroporto SET nome_aeroporto = ?, cidade = ?, codigo_pais_iso = ?, latitude = ?, longitude = ?, altitude = ? WHERE codigo_iata = ?";
+    return jdbcTemplate.update(sql,
+      aeroporto.getNomeAeroporto(),
+      aeroporto.getCidade(),
+      aeroporto.getCodigoPaisIso(),
+      aeroporto.getLatitude(),
+      aeroporto.getLongitude(),
+      aeroporto.getAltitude(),
+      iata
+    );
+  }
 }

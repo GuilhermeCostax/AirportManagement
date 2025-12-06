@@ -8,4 +8,5 @@ public interface AeroportoRepository {
   List<Aeroporto> findAll();
   Optional<Aeroporto> findByIata(String iata);
   Aeroporto save(Aeroporto aeroporto);
+  int updateByIata(String iata, Aeroporto aeroporto);
 }
